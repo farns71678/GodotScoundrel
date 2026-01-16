@@ -11,6 +11,11 @@ config_version=5
 [application]
 
 config/name="sky"
-run/main_scene="uid://bayw73ve8ui7r"
+run/main_scene="uid://de1kxx3oqjcu4"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=1500
+window/size/viewport_height=800

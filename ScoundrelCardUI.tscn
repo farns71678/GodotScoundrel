@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://b16ift4uubppo"]
+
+[ext_resource type="Script" uid="uid://dlhwlr8ixvrch" path="res://addons/simple_card_pile_ui/card_ui.gd" id="1_e77r2"]
+
+[node name="ScoundrelCardUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_e77r2")
+metadata/_custom_type_script = "uid://dlhwlr8ixvrch"
+
+[node name="Frontface" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Backface" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
