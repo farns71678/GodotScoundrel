@@ -91,5 +91,15 @@ text = "20"
 horizontal_alignment = 1
 vertical_alignment = 2
 
+[node name="InstuctionsLabel" type="RichTextLabel" parent="."]
+offset_left = 1.0
+offset_top = 324.0
+offset_right = 1499.0
+offset_bottom = 441.0
+theme_override_font_sizes/normal_font_size = 30
+text = "Instuction Panel"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [connection signal="pressed" from="FaceRoomBtn" to="Room" method="_on_face_room_btn_pressed"]
 [connection signal="pressed" from="SkipRoomBtn" to="Room" method="_on_skip_room_btn_pressed"]

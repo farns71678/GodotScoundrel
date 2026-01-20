@@ -7,13 +7,21 @@ const CARD_DEFAULT_SPEED = 0.1;
 const WEAPON_STACK_Y_POSITION = 550;
 const WEAPON_CARD_SIZE = 180;
 
+enum ROOM_STATE {
+	NORMAL,
+	DEFEND	
+};
+
 var room: Array[Card] = [null, null, null, null];
 var equiped_weapon: Card = null;
 var weapon_stack: Array[Card] = [];
 var discard_reference;
 var deck_reference;
+var instruction_label;
 var face_btn;
 var skip_btn;
+var room_state: ROOM_STATE = ROOM_STATE.NORMAL;
+var selected_card: Card = null;
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -21,9 +29,13 @@ func _ready() -> void:
 	deck_reference = $"../Deck";
 	face_btn = $"../FaceRoomBtn";
 	skip_btn = $"../SkipRoomBtn";
+	instruction_label = $"../InstuctionsLabel";
+	set_instruction("Face or Skip the room");
 	advance_room();
 	pass # Replace with function body.
 
+func set_instruction(label: String):
+	instruction_label.text = label;
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -53,6 +65,7 @@ func add_card_to_room_index(card, index: int, speed = CARD_DEFAULT_SPEED):
 func _on_face_room_btn_pressed() -> void:
 	skip_btn.disabled = true;
 	face_btn.disabled = true;
+	set_instruction("Face 3 out of the 4 cards");
 	''' Random Face room for testing
 	var kept_index = randi_range(0, 3);
 	for i in range(len(room)):
@@ -76,22 +89,36 @@ func play_card_effect(card: Card):
 			print("other");
 	
 func fight_monster(card: Card):
+	selected_card = card;
+	if (equiped_weapon && equiped_weapon.value > card.value):
+		set_instruction("Block with weapon or take damage");
+		room_state = ROOM_STATE.DEFEND;
+	else:
+		take_damage(card.value);
+		discard_reference.add_card_to_discard_pile(card);
+		selected_card = null;
+	#set_instruction("Block with weapon or take damage");
+	#print("Fought", card.card_name, ".", "New Health:\t", health);
+
+func take_damage(damage: int):
 	var health_label = $"../Health".get_node("HealthLabel");
 	var health: int = int(health_label.text);
-	health = max(0, health - card.value);
+	health = max(0, health - damage);
 	health_label.text = str(health);
-	discard_reference.add_card_to_discard_pile(card);
-	print("Fought", card.card_name, ".", "New Health:\t", health);
+	
 
 func take_potion(card: Card):
+	selected_card = card;
 	var health_label = $"../Health".get_node("HealthLabel");
 	var health: int = int(health_label.text);
 	health = min(20, health + card.value);
 	health_label.text = str(health);
 	discard_reference.add_card_to_discard_pile(card);
+	selected_card = null;
 	print("Healed to", health, "health");
 
 func equip_weapon(card: Card):
+	selected_card = card;
 	if (equiped_weapon != null):
 		for i in range(len(weapon_stack)):
 			discard_reference.add_card_to_discard_pile(weapon_stack[i]);
@@ -100,28 +127,29 @@ func equip_weapon(card: Card):
 	
 	equiped_weapon = card;
 	shift_weapon_stack();
+	selected_card = null;
 
 func shift_weapon_stack():
 	var center_screen = get_viewport().size.x / 2;
 	const offset = -60;
 	var weapon_num = len(weapon_stack) + 1;
 	for i in range(weapon_num):
-		var weapon: Card = equiped_weapon if i == 0 else weapon_stack[i];
-		var pos = Vector2(center_screen - (WEAPON_CARD_SIZE + offset * weapon_num) / 2, WEAPON_STACK_Y_POSITION);
+		var weapon: Card = equiped_weapon if i == 0 else weapon_stack[i - 1];
+		var pos = Vector2(center_screen - (WEAPON_CARD_SIZE + offset * i) / 2, WEAPON_STACK_Y_POSITION);
 		animate_card_to_position(weapon, pos, 0.3);
-			
 			
 
 func _on_card_left_click_released(card: Card):
 	if (!card):
 		return;
 	
-	if (!face_btn.disabled || !skip_btn.disabled):
-		face_btn.disabled = true;
-		skip_btn.disabled = true;
-	
+	var card_is_in_room = false;
 	for i in range (len(room)):
 		if (room[i] == card):
+			card_is_in_room = true;
+			if (!face_btn.disabled || !skip_btn.disabled):
+				face_btn.disabled = true;
+				skip_btn.disabled = true;
 			play_card_effect(room[i]);
 			# do -v in play_card_effect functions
 			#discard_reference.add_card_to_discard_pile(room[i]);
@@ -131,12 +159,24 @@ func _on_card_left_click_released(card: Card):
 				face_btn.disabled = false;
 				skip_btn.disabled = false;
 				advance_room();
+				set_instruction("Face or Skip room");
 			
+			set_instruction("Face " + str(3 - room.count(null)) + " out of the 4 cards");
 			break;
+	
+	if (!card_is_in_room):
+		if (card == equiped_weapon && room_state == ROOM_STATE.DEFEND):
+			var reduced_damage = min(0, selected_card.value - equiped_weapon.value);
+			take_damage(reduced_damage);
+			weapon_stack.push_back(selected_card);
+			shift_weapon_stack();
+			selected_card = null;
+			# defend weapon stuff
 
 func _on_skip_room_btn_pressed() -> void:
 	skip_btn.disabled = true;
 	face_btn.disabled = true;
+	set_instruction("Face 3 out of the 4 cards");
 	for i in range(len(room)):
 		if (room[i] != null):
 			var card = room[i];
