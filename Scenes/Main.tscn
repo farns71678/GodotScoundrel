@@ -1,0 +1,95 @@
+[gd_scene load_steps=10 format=3 uid="uid://mjm66o6ka5qo"]
+
+[ext_resource type="Script" uid="uid://b4kyu6lsrkpyi" path="res://Scripts/card_manager.gd" id="1_pbw6q"]
+[ext_resource type="PackedScene" uid="uid://bpbhky87p60x6" path="res://Scenes/CardSlot.tscn" id="2_v1gob"]
+[ext_resource type="Script" uid="uid://gn5lggo4y6id" path="res://Scripts/player_hand.gd" id="3_jw32o"]
+[ext_resource type="Script" uid="uid://pa0nfpm380w6" path="res://Scenes/deck.gd" id="4_50glp"]
+[ext_resource type="Texture2D" uid="uid://ben7qqx34vpkq" path="res://assets/card_back.png" id="5_v1gob"]
+[ext_resource type="Script" uid="uid://bx15wpw56owg1" path="res://Scenes/input_manager.gd" id="6_v1gob"]
+[ext_resource type="Script" uid="uid://clh61ycejsmai" path="res://Scripts/room.gd" id="7_jw32o"]
+[ext_resource type="PackedScene" uid="uid://b6q7018lcyet7" path="res://Scenes/Discard.tscn" id="8_50glp"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r0du0"]
+size = Vector2(156, 216)
+
+[node name="Main" type="Node2D"]
+
+[node name="CardManager" type="Node2D" parent="."]
+script = ExtResource("1_pbw6q")
+
+[node name="CardSlot" parent="." instance=ExtResource("2_v1gob")]
+visible = false
+position = Vector2(545, 590)
+
+[node name="PlayerHand" type="Node2D" parent="."]
+script = ExtResource("3_jw32o")
+
+[node name="CardSlot2" parent="." instance=ExtResource("2_v1gob")]
+visible = false
+position = Vector2(835, 590)
+
+[node name="Deck" type="Node2D" parent="."]
+z_index = -2
+position = Vector2(141, 180)
+script = ExtResource("4_50glp")
+
+[node name="Sprite2D" type="Sprite2D" parent="Deck"]
+z_index = -2
+texture = ExtResource("5_v1gob")
+
+[node name="Area2D" type="Area2D" parent="Deck"]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Deck/Area2D"]
+shape = SubResource("RectangleShape2D_r0du0")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Deck"]
+z_index = -2
+offset_left = -37.0
+offset_top = -36.0
+offset_right = 3.0
+offset_bottom = 4.0
+scale = Vector2(2, 2)
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InputManager" type="Node2D" parent="."]
+script = ExtResource("6_v1gob")
+
+[node name="Room" type="Node2D" parent="."]
+script = ExtResource("7_jw32o")
+
+[node name="Discard" parent="." instance=ExtResource("8_50glp")]
+position = Vector2(1300, 550)
+
+[node name="FaceRoomBtn" type="Button" parent="."]
+offset_left = 1251.0
+offset_top = 150.0
+offset_right = 1344.0
+offset_bottom = 181.0
+disabled = true
+text = "Face Room"
+
+[node name="SkipRoomBtn" type="Button" parent="."]
+offset_left = 1256.0
+offset_top = 221.0
+offset_right = 1346.0
+offset_bottom = 252.0
+text = "Skip Room"
+
+[node name="Health" type="Node2D" parent="."]
+
+[node name="HealthLabel" type="RichTextLabel" parent="Health"]
+offset_left = 672.0
+offset_top = 624.0
+offset_right = 832.0
+offset_bottom = 784.0
+theme_override_font_sizes/normal_font_size = 60
+text = "20"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[connection signal="pressed" from="FaceRoomBtn" to="Room" method="_on_face_room_btn_pressed"]
+[connection signal="pressed" from="SkipRoomBtn" to="Room" method="_on_skip_room_btn_pressed"]

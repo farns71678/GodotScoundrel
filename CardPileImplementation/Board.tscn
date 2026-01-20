@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://de1kxx3oqjcu4"]
+
+[ext_resource type="Script" uid="uid://u7s2gnx7po3r" path="res://CardPileImplementation/board.gd" id="1_otxgx"]
+[ext_resource type="Script" uid="uid://dd543ymk4gfr0" path="res://CardPileImplementation/scoundrel_pile_ui.gd" id="2_hq5ls"]
+[ext_resource type="PackedScene" uid="uid://b16ift4uubppo" path="res://CardPileImplementation/ScoundrelCardUI.tscn" id="2_otxgx"]
+
+[node name="Board" type="Node2D"]
+script = ExtResource("1_otxgx")
+
+[node name="CardPileUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_hq5ls")
+json_card_database_path = "res://scoundrel_database.json"
+json_card_collection_path = "res://scoundrel_collection.json"
+extended_card_ui = ExtResource("2_otxgx")
+draw_pile_position = Vector2(75, 60)
+card_return_speed = 0.2
