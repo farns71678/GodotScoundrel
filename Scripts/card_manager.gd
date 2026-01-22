@@ -83,7 +83,14 @@ func highlight_card(card, hovered):
 		card.z_index = 2;
 	else:
 		card.scale = Vector2(1, 1)
-		card.z_index = 1;
+		var weapon_stack: Array[Card] = room_reference.weapon_stack;
+		var weapon_index = weapon_stack.find(card);
+		if (weapon_index >= 0):
+			card.z_index = -1 * weapon_index;
+		elif (card == room_reference.equiped_weapon):
+			card.z_index = 1;
+		else:
+			card.z_index = 1;
 		
 
 func raycast_check_for_card():

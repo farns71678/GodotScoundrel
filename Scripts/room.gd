@@ -90,7 +90,7 @@ func play_card_effect(card: Card):
 	
 func fight_monster(card: Card):
 	selected_card = card;
-	if (equiped_weapon && equiped_weapon.value > card.value):
+	if (equiped_weapon && (!len(weapon_stack) || weapon_stack[len(weapon_stack) - 1].value > card.value)):
 		set_instruction("Block with weapon or take damage");
 		room_state = ROOM_STATE.DEFEND;
 	else:
@@ -135,8 +135,9 @@ func shift_weapon_stack():
 	var weapon_num = len(weapon_stack) + 1;
 	for i in range(weapon_num):
 		var weapon: Card = equiped_weapon if i == 0 else weapon_stack[i - 1];
+		weapon.z_index = -1 * i + 1;
 		var pos = Vector2(center_screen - (WEAPON_CARD_SIZE + offset * i) / 2, WEAPON_STACK_Y_POSITION);
-		animate_card_to_position(weapon, pos, 0.3);
+		animate_card_to_position(weapon, pos);
 			
 
 func _on_card_left_click_released(card: Card):
@@ -155,22 +156,27 @@ func _on_card_left_click_released(card: Card):
 			#discard_reference.add_card_to_discard_pile(room[i]);
 			room[i] = null;
 			
-			if (room.count(null) == 3):
+			if (room.count(null) == 3 && room_state != ROOM_STATE.DEFEND):
 				face_btn.disabled = false;
 				skip_btn.disabled = false;
 				advance_room();
 				set_instruction("Face or Skip room");
 			
-			set_instruction("Face " + str(3 - room.count(null)) + " out of the 4 cards");
+			if (room_state == ROOM_STATE.NORMAL):
+				set_instruction("Face " + str(3 - room.count(null)) + " out of the 4 cards");
 			break;
 	
 	if (!card_is_in_room):
 		if (card == equiped_weapon && room_state == ROOM_STATE.DEFEND):
-			var reduced_damage = min(0, selected_card.value - equiped_weapon.value);
+			var reduced_damage = max(0, selected_card.value - equiped_weapon.value);
 			take_damage(reduced_damage);
 			weapon_stack.push_back(selected_card);
 			shift_weapon_stack();
 			selected_card = null;
+			room_state = ROOM_STATE.NORMAL;
+			if (room.count(null) == 3):
+				advance_room();
+				set_instruction("Face or Skip room");
 			# defend weapon stuff
 
 func _on_skip_room_btn_pressed() -> void:
@@ -195,3 +201,13 @@ func _on_skip_room_btn_pressed() -> void:
 			timer.autostart = true;
 			add_child(timer);
 	advance_room();
+
+func _on_discard_pile_clicked():
+	if (room_state == ROOM_STATE.DEFEND):
+		take_damage(selected_card.value);
+		discard_reference.add_card_to_discard_pile(selected_card);
+		selected_card = null;
+		room_state = ROOM_STATE.NORMAL;
+		if (room.count(null) == 3):
+			advance_room();
+			set_instruction("Face or Skip room");

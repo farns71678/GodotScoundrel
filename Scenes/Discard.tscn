@@ -7,6 +7,7 @@
 script = ExtResource("1_la3hf")
 
 [node name="TextureRect" type="TextureRect" parent="."]
+visible = false
 z_index = -2
 offset_left = -75.6
 offset_top = -105.6
@@ -14,3 +15,13 @@ offset_right = 176.4
 offset_bottom = 246.4
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("2_7xehr")
+
+[node name="TextureButton" type="TextureButton" parent="."]
+offset_left = -75.6
+offset_top = -105.6
+offset_right = 176.4
+offset_bottom = 246.4
+scale = Vector2(0.6, 0.6)
+texture_normal = ExtResource("2_7xehr")
+
+[connection signal="pressed" from="TextureButton" to="." method="_on_discard_pile_clicked"]

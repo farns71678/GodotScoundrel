@@ -19,3 +19,7 @@ func add_card_to_discard_pile(card):
 	$"../Room".animate_card_to_position(card, discard_pos);
 	card.z_index = len(discard_pile) - 1;
 	card.source_position = discard_pos;
+
+func _on_discard_pile_clicked() -> void:
+	$"../Room"._on_discard_pile_clicked();
+	pass # Replace with function body.
