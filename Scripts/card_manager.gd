@@ -63,11 +63,17 @@ func on_left_click_released():
 			room_reference._on_card_left_click_released(card);
 
 func on_hovered_over_card(card):
+	if (room_reference.game_over):
+		return;
+	
 	if !is_hovering_on_card && card.card_pile != Card.CARD_PILE.DISCARD:
 		highlight_card(card, true);
 		is_hovering_on_card = true;
 	
 func on_hovered_off_card(card: Card):
+	if (room_reference.game_over):
+		return;
+	
 	if !card_being_dragged && card.card_pile != Card.CARD_PILE.DISCARD:
 		highlight_card(card, false);
 		var new_card_hovered = raycast_check_for_card()

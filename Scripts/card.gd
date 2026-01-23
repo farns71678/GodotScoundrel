@@ -34,6 +34,7 @@ var card_pile = CARD_PILE.OTHER;
 var collision_enabled = true;
 var value = 0;
 var suit: SUIT = SUIT.UNDEFINED;
+var room_reference;
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

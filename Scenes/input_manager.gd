@@ -16,6 +16,9 @@ func _ready() -> void:
 	room_reference = $"../Room"
 
 func _input(event: InputEvent) -> void:
+	if (room_reference.game_over):
+		return;
+	
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.is_pressed():
 			emit_signal("left_mouse_btn_clicked");

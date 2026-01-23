@@ -22,6 +22,7 @@ var face_btn;
 var skip_btn;
 var room_state: ROOM_STATE = ROOM_STATE.NORMAL;
 var selected_card: int = -1;
+var game_over: bool = false;
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -53,9 +54,16 @@ func advance_room(can_skip: bool = true):
 		if (room[i] == null):
 			var drawn = $"../Deck".draw_card_to_room_pos(i);
 			if (!drawn):
-				print("Game over! You Won!");
+				end_game(true);
 				return;
 
+func end_game(won: bool):
+	game_over = true;
+	var end_screen = preload("res://Scenes/EndScreen.tscn").instantiate();
+	var result = "You Won" if won else "You Lost";
+	end_screen.get_node("ResultLabel").text = result;
+	end_screen.z_index = 1000;
+	$"..".add_child(end_screen);
 
 func animate_card_to_position(card: Card, new_position: Vector2, speed = CARD_DEFAULT_SPEED):
 	var tween = get_tree().create_tween()
@@ -115,6 +123,8 @@ func take_damage(damage: int):
 	var health: int = int(health_label.text);
 	health = max(0, health - damage);
 	health_label.text = str(health);
+	if (health == 0):
+		end_game(false);
 
 func take_potion(card: Card):
 	var health_label = $"../Health".get_node("HealthLabel");
