@@ -83,7 +83,7 @@ text = "Skip Room"
 
 [node name="HealthLabel" type="RichTextLabel" parent="Health"]
 offset_left = 672.0
-offset_top = 624.0
+offset_top = 686.0
 offset_right = 832.0
 offset_bottom = 784.0
 theme_override_font_sizes/normal_font_size = 60
@@ -93,9 +93,9 @@ vertical_alignment = 2
 
 [node name="InstuctionsLabel" type="RichTextLabel" parent="."]
 offset_left = 1.0
-offset_top = 324.0
+offset_top = 355.0
 offset_right = 1499.0
-offset_bottom = 441.0
+offset_bottom = 407.0
 theme_override_font_sizes/normal_font_size = 30
 text = "Instuction Panel"
 horizontal_alignment = 1
