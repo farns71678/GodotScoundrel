@@ -41,3 +41,7 @@ func raycast_at_cursor():
 			# DECK CLICKED
 			#deck_reference.draw_card()
 			#room_reference.advance_room();
+
+
+func _on_end_game_btn_pressed() -> void:
+	get_tree().change_scene_to_file("res://Scenes/StartScreen.tscn");

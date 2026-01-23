@@ -64,6 +64,13 @@ script = ExtResource("7_jw32o")
 [node name="Discard" parent="." instance=ExtResource("8_50glp")]
 position = Vector2(1300, 550)
 
+[node name="EndGameBtn" type="Button" parent="."]
+offset_left = 26.0
+offset_top = 749.0
+offset_right = 113.0
+offset_bottom = 780.0
+text = "Exit Game"
+
 [node name="FaceRoomBtn" type="Button" parent="."]
 offset_left = 1251.0
 offset_top = 150.0
@@ -101,5 +108,6 @@ text = "Instuction Panel"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[connection signal="pressed" from="EndGameBtn" to="InputManager" method="_on_end_game_btn_pressed"]
 [connection signal="pressed" from="FaceRoomBtn" to="Room" method="_on_face_room_btn_pressed"]
 [connection signal="pressed" from="SkipRoomBtn" to="Room" method="_on_skip_room_btn_pressed"]

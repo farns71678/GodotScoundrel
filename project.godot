@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="sky"
-run/main_scene="uid://mjm66o6ka5qo"
+run/main_scene="uid://c6rbvdexhqaqt"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
