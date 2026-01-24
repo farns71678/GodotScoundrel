@@ -3,7 +3,7 @@ extends Node2D
 const CARD_WIDTH = 180;
 const ROOM_Y_POSITION = 180;
 const ROOM_X_POSITION = 400;
-const CARD_DEFAULT_SPEED = 0.1;
+const CARD_DEFAULT_SPEED = 0.2;
 const WEAPON_STACK_Y_POSITION = 550;
 const WEAPON_CARD_SIZE = 180;
 
@@ -17,6 +17,8 @@ var equiped_weapon: Card = null;
 var weapon_stack: Array[Card] = [];
 var discard_reference;
 var deck_reference;
+var audio_card_ref;
+var audio_deck_ref;
 var instruction_label;
 var face_btn;
 var skip_btn;
@@ -31,6 +33,8 @@ func _ready() -> void:
 	face_btn = $"../FaceRoomBtn";
 	skip_btn = $"../SkipRoomBtn";
 	instruction_label = $"../InstuctionsLabel";
+	audio_card_ref = $"../AudioPlayer/AudioCard";
+	audio_deck_ref = $"../AudioPlayer/AudioDeck";
 	set_instruction("Face or Skip the room");
 	advance_room();
 	pass # Replace with function body.
@@ -50,18 +54,23 @@ func advance_room(can_skip: bool = true):
 	else:
 		face_btn.disabled = true;
 		set_instruction("Face 3 out of the 4 cards");
+	var played_effect = false;
 	for i in range (len(room)):
 		if (room[i] == null):
 			var drawn = $"../Deck".draw_card_to_room_pos(i);
 			if (!drawn):
 				end_game(true);
 				return;
+			elif (!played_effect):
+				audio_deck_ref.play();
+				played_effect = true;
 
 func end_game(won: bool):
 	game_over = true;
 	var end_screen = preload("res://Scenes/EndScreen.tscn").instantiate();
 	var result = "You Won" if won else "You Lost";
 	end_screen.get_node("ResultLabel").text = result;
+	end_screen.get_node("ScoreLabel").text = "Score: " + str(get_score());
 	end_screen.z_index = 1000;
 	$"..".add_child(end_screen);
 
@@ -112,8 +121,8 @@ func fight_monster(card: Card):
 		#var glow: WorldEnvironment = equiped_weapon.get_node("WorldEnvironment");
 		#glow.environment.glow_intensity = 2;
 	else:
-		take_damage(card.value);
 		discard_reference.add_card_to_discard_pile(card);
+		take_damage(card.value);
 		return true;
 	#set_instruction("Block with weapon or take damage");
 	#print("Fought", card.card_name, ".", "New Health:\t", health);
@@ -167,6 +176,27 @@ func shift_weapon_stack():
 		pos = Vector2(center_screen - (WEAPON_CARD_SIZE - offset * i) / 2 - WEAPON_CARD_SIZE / 2, WEAPON_STACK_Y_POSITION);
 		animate_card_to_position(weapon, pos);
 
+func get_score():
+	var score = 0;
+	for i in range (len(discard_reference.discard_pile)):
+		var card = discard_reference.discard_pile[i];
+		if (card.suit == Card.SUIT.SPADE || card.suit == Card.SUIT.CLUB):
+			score += card.value;
+			
+	for i in range (len(weapon_stack)):
+		var card = weapon_stack[i];
+		if (card.suit == Card.SUIT.SPADE || card.suit == Card.SUIT.CLUB):
+			score += card.value;
+	
+	if (len(deck_reference.deck) == 0):
+		# won game
+		score += int($"../Health/HealthLabel".text);
+		
+		for i in range (len(room)):
+			if (room[i].suit == Card.SUIT.HEART):
+				score += room[i].value;
+	return int(score);
+
 func unselect_card():
 	selected_card = -1;
 
@@ -196,6 +226,7 @@ func _on_card_left_click_released(card: Card):
 				#discard_reference.add_card_to_discard_pile(room[i]);
 				
 				if (finished_play):
+					audio_card_ref.play();
 					room[i] = null;
 					unselect_card();
 				
@@ -209,8 +240,9 @@ func _on_card_left_click_released(card: Card):
 	if (!card_is_in_room):
 		if (card == equiped_weapon && room_state == ROOM_STATE.DEFEND):
 			var reduced_damage = max(0, get_selected_card().value - equiped_weapon.value);
-			take_damage(reduced_damage);
 			weapon_stack.push_back(get_selected_card());
+			take_damage(reduced_damage);
+			audio_card_ref.play();
 			shift_weapon_stack();
 			room[selected_card] = null;
 			unselect_card();
@@ -227,6 +259,7 @@ func _on_skip_room_btn_pressed() -> void:
 			var card = room[i];
 			#new_card.get_node("AnimationPlayer").play("card_flip");
 			card.z_index = -3;
+			audio_card_ref.play();
 			animate_card_to_position(card, deck_reference.position);
 			deck_reference.add_card_to_bottom(card.card_name);
 			room[i] = null;
@@ -243,8 +276,9 @@ func _on_skip_room_btn_pressed() -> void:
 
 func _on_discard_pile_clicked():
 	if (room_state == ROOM_STATE.DEFEND):
-		take_damage(get_selected_card().value);
+		audio_card_ref.play();
 		discard_reference.add_card_to_discard_pile(get_selected_card());
+		take_damage(get_selected_card().value);
 		room[selected_card] = null;
 		unselect_card();
 		room_state = ROOM_STATE.NORMAL;

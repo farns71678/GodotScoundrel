@@ -1,13 +1,15 @@
-[gd_scene load_steps=10 format=3 uid="uid://mjm66o6ka5qo"]
+[gd_scene load_steps=12 format=3 uid="uid://mjm66o6ka5qo"]
 
 [ext_resource type="Script" uid="uid://b4kyu6lsrkpyi" path="res://Scripts/card_manager.gd" id="1_pbw6q"]
 [ext_resource type="PackedScene" uid="uid://bpbhky87p60x6" path="res://Scenes/CardSlot.tscn" id="2_v1gob"]
 [ext_resource type="Script" uid="uid://gn5lggo4y6id" path="res://Scripts/player_hand.gd" id="3_jw32o"]
-[ext_resource type="Script" uid="uid://pa0nfpm380w6" path="res://Scenes/deck.gd" id="4_50glp"]
+[ext_resource type="Script" uid="uid://pa0nfpm380w6" path="res://Scripts/deck.gd" id="4_50glp"]
 [ext_resource type="Texture2D" uid="uid://ben7qqx34vpkq" path="res://assets/card_back.png" id="5_v1gob"]
-[ext_resource type="Script" uid="uid://bx15wpw56owg1" path="res://Scenes/input_manager.gd" id="6_v1gob"]
+[ext_resource type="Script" uid="uid://bx15wpw56owg1" path="res://Scripts/input_manager.gd" id="6_v1gob"]
+[ext_resource type="AudioStream" uid="uid://ddjskr0fagsqi" path="res://assets/SFX/mixkit-poker-card-flick-2002.wav" id="6_vy5pj"]
 [ext_resource type="Script" uid="uid://clh61ycejsmai" path="res://Scripts/room.gd" id="7_jw32o"]
 [ext_resource type="PackedScene" uid="uid://b6q7018lcyet7" path="res://Scenes/Discard.tscn" id="8_50glp"]
+[ext_resource type="AudioStream" uid="uid://dwhjxmkhdw6gh" path="res://assets/SFX/mixkit-poker-card-placement-2001.wav" id="10_bmxlf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_r0du0"]
 size = Vector2(156, 216)
@@ -107,6 +109,14 @@ theme_override_font_sizes/normal_font_size = 30
 text = "Instuction Panel"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="AudioPlayer" type="Node2D" parent="."]
+
+[node name="AudioDeck" type="AudioStreamPlayer" parent="AudioPlayer"]
+stream = ExtResource("6_vy5pj")
+
+[node name="AudioCard" type="AudioStreamPlayer" parent="AudioPlayer"]
+stream = ExtResource("10_bmxlf")
 
 [connection signal="pressed" from="EndGameBtn" to="InputManager" method="_on_end_game_btn_pressed"]
 [connection signal="pressed" from="FaceRoomBtn" to="Room" method="_on_face_room_btn_pressed"]

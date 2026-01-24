@@ -1,7 +1,7 @@
 extends Node2D
 
 const CARD_SCENE_PATH = "res://Scenes/Card.tscn";
-const CARD_DRAW_SPEED = 0.2;
+const CARD_DRAW_SPEED = 0.4;
 
 var card_database = [];
 var deck = [];
@@ -87,6 +87,7 @@ func draw_card_to_room_pos(index: int):
 	#new_card.get_node("DefenseLabel").text = str(card_database_reference.CARDS[card_drawn][1]);
 	$"../Room".add_card_to_room_index(new_card, index, CARD_DRAW_SPEED);
 	new_card.get_node("AnimationPlayer").play("card_flip");
+	#$AudioStreamPlayer.play(0.1);
 	return true;
 
 func update_deck_size_label():

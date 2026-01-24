@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://b522k7jod6r6i"]
 
-[ext_resource type="Script" uid="uid://bgtv35tq1iyop" path="res://Scripts/end_screen.gd" id="1_gcms0"]
+[ext_resource type="Script" path="res://Scripts/end_screen.gd" id="1_gcms0"]
 [ext_resource type="StyleBox" uid="uid://uatyjwywphsv" path="res://assets/Resources/EndButtonNormal.tres" id="2_3gukv"]
 [ext_resource type="StyleBox" uid="uid://rod3mhj06pl1" path="res://assets/Resources/EndButtonPressed.tres" id="3_jh5rx"]
 [ext_resource type="StyleBox" uid="uid://bmwneu16ppfir" path="res://assets/Resources/endButtonHover.tres" id="4_d234m"]
@@ -11,7 +11,7 @@
 script = ExtResource("1_gcms0")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-modulate = Color(0.28, 0.2492, 0.2492, 0.68235296)
+modulate = Color(0.16, 0.1424, 0.1424, 0.827451)
 offset_right = 1500.0
 offset_bottom = 800.0
 texture = SubResource("CanvasTexture_sqcs3")
@@ -30,31 +30,43 @@ vertical_alignment = 1
 offset_left = 492.0
 offset_top = 232.0
 offset_right = 1024.0
-offset_bottom = 357.0
+offset_bottom = 320.0
 theme_override_font_sizes/normal_font_size = 52
 text = "Game result"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="StartScreenBtn" type="Button" parent="."]
-offset_left = 680.0
-offset_top = 496.0
-offset_right = 820.0
-offset_bottom = 528.0
+offset_left = 630.0
+offset_top = 568.0
+offset_right = 870.0
+offset_bottom = 618.0
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = ExtResource("2_3gukv")
 theme_override_styles/pressed = ExtResource("3_jh5rx")
 theme_override_styles/hover = ExtResource("4_d234m")
 text = "Return to Start"
 
 [node name="PlayAgainBtn" type="Button" parent="."]
-offset_left = 680.0
-offset_top = 427.0
-offset_right = 820.0
-offset_bottom = 459.0
+offset_left = 630.0
+offset_top = 479.0
+offset_right = 870.0
+offset_bottom = 529.0
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = ExtResource("2_3gukv")
 theme_override_styles/pressed = ExtResource("3_jh5rx")
 theme_override_styles/hover = ExtResource("4_d234m")
 text = "Play Again"
+
+[node name="ScoreLabel" type="RichTextLabel" parent="."]
+offset_left = 597.0
+offset_top = 338.0
+offset_right = 901.0
+offset_bottom = 441.0
+theme_override_font_sizes/normal_font_size = 36
+text = "Score: "
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="pressed" from="StartScreenBtn" to="." method="_on_start_screen_btn_pressed"]
 [connection signal="pressed" from="PlayAgainBtn" to="." method="_on_play_again_btn_pressed"]
