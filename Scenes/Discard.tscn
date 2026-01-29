@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b6q7018lcyet7"]
 
 [ext_resource type="Script" uid="uid://cmfd8yv8qpsmv" path="res://Scripts/discard.gd" id="1_la3hf"]
-[ext_resource type="Texture2D" uid="uid://dssn87cfmxipc" path="res://assets/card_slot.png" id="2_7xehr"]
+[ext_resource type="Texture2D" uid="uid://dssn87cfmxipc" path="res://assets/Cards/card_slot.png" id="2_7xehr"]
 
 [node name="Discard" type="Node2D"]
 script = ExtResource("1_la3hf")

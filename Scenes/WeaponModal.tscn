@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://pjpfbycnl237"]
 
-[ext_resource type="Texture2D" uid="uid://ben7qqx34vpkq" path="res://assets/card_back.png" id="1_xeor7"]
-[ext_resource type="Texture2D" uid="uid://dssn87cfmxipc" path="res://assets/card_slot.png" id="2_xeor7"]
+[ext_resource type="Texture2D" uid="uid://ben7qqx34vpkq" path="res://assets/Cards/card_back.png" id="1_xeor7"]
+[ext_resource type="Texture2D" uid="uid://dssn87cfmxipc" path="res://assets/Cards/card_slot.png" id="2_xeor7"]
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_8eyar"]
 

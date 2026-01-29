@@ -1,10 +1,10 @@
 [gd_scene load_steps=12 format=3 uid="uid://mjm66o6ka5qo"]
 
+[ext_resource type="PackedScene" uid="uid://b41dun6ly15lx" path="res://Scenes/Rules.tscn" id="1_bmxlf"]
 [ext_resource type="Script" uid="uid://b4kyu6lsrkpyi" path="res://Scripts/card_manager.gd" id="1_pbw6q"]
-[ext_resource type="PackedScene" uid="uid://bpbhky87p60x6" path="res://Scenes/CardSlot.tscn" id="2_v1gob"]
 [ext_resource type="Script" uid="uid://gn5lggo4y6id" path="res://Scripts/player_hand.gd" id="3_jw32o"]
 [ext_resource type="Script" uid="uid://pa0nfpm380w6" path="res://Scripts/deck.gd" id="4_50glp"]
-[ext_resource type="Texture2D" uid="uid://ben7qqx34vpkq" path="res://assets/card_back.png" id="5_v1gob"]
+[ext_resource type="Texture2D" uid="uid://ben7qqx34vpkq" path="res://assets/Cards/card_back.png" id="5_v1gob"]
 [ext_resource type="Script" uid="uid://bx15wpw56owg1" path="res://Scripts/input_manager.gd" id="6_v1gob"]
 [ext_resource type="AudioStream" uid="uid://ddjskr0fagsqi" path="res://assets/SFX/mixkit-poker-card-flick-2002.wav" id="6_vy5pj"]
 [ext_resource type="Script" uid="uid://clh61ycejsmai" path="res://Scripts/room.gd" id="7_jw32o"]
@@ -19,16 +19,8 @@ size = Vector2(156, 216)
 [node name="CardManager" type="Node2D" parent="."]
 script = ExtResource("1_pbw6q")
 
-[node name="CardSlot" parent="." instance=ExtResource("2_v1gob")]
-visible = false
-position = Vector2(545, 590)
-
 [node name="PlayerHand" type="Node2D" parent="."]
 script = ExtResource("3_jw32o")
-
-[node name="CardSlot2" parent="." instance=ExtResource("2_v1gob")]
-visible = false
-position = Vector2(835, 590)
 
 [node name="Deck" type="Node2D" parent="."]
 z_index = -2
@@ -66,26 +58,33 @@ script = ExtResource("7_jw32o")
 [node name="Discard" parent="." instance=ExtResource("8_50glp")]
 position = Vector2(1300, 550)
 
+[node name="RulesBtn" type="Button" parent="."]
+offset_left = 26.0
+offset_top = 705.0
+offset_right = 116.0
+offset_bottom = 736.0
+text = "Rules"
+
 [node name="EndGameBtn" type="Button" parent="."]
 offset_left = 26.0
 offset_top = 749.0
-offset_right = 113.0
+offset_right = 116.0
 offset_bottom = 780.0
 text = "Exit Game"
 
 [node name="FaceRoomBtn" type="Button" parent="."]
-offset_left = 1251.0
-offset_top = 150.0
-offset_right = 1344.0
-offset_bottom = 181.0
+offset_left = 1256.0
+offset_top = 144.0
+offset_right = 1349.0
+offset_bottom = 175.0
 disabled = true
 text = "Face Room"
 
 [node name="SkipRoomBtn" type="Button" parent="."]
 offset_left = 1256.0
-offset_top = 221.0
-offset_right = 1346.0
-offset_bottom = 252.0
+offset_top = 205.0
+offset_right = 1349.0
+offset_bottom = 236.0
 text = "Skip Room"
 
 [node name="Health" type="Node2D" parent="."]
@@ -110,6 +109,9 @@ text = "Instuction Panel"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Rules" parent="." instance=ExtResource("1_bmxlf")]
+visible = false
+
 [node name="AudioPlayer" type="Node2D" parent="."]
 
 [node name="AudioDeck" type="AudioStreamPlayer" parent="AudioPlayer"]
@@ -118,6 +120,7 @@ stream = ExtResource("6_vy5pj")
 [node name="AudioCard" type="AudioStreamPlayer" parent="AudioPlayer"]
 stream = ExtResource("10_bmxlf")
 
+[connection signal="pressed" from="RulesBtn" to="Room" method="_on_rules_btn_pressed"]
 [connection signal="pressed" from="EndGameBtn" to="InputManager" method="_on_end_game_btn_pressed"]
 [connection signal="pressed" from="FaceRoomBtn" to="Room" method="_on_face_room_btn_pressed"]
 [connection signal="pressed" from="SkipRoomBtn" to="Room" method="_on_skip_room_btn_pressed"]

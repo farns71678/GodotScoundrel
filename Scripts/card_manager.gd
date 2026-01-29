@@ -63,7 +63,7 @@ func on_left_click_released():
 			room_reference._on_card_left_click_released(card);
 
 func on_hovered_over_card(card):
-	if (room_reference.game_over):
+	if (room_reference.game_over || room_reference.game_paused):
 		return;
 	
 	if !is_hovering_on_card && card.card_pile != Card.CARD_PILE.DISCARD:
@@ -71,7 +71,7 @@ func on_hovered_over_card(card):
 		is_hovering_on_card = true;
 	
 func on_hovered_off_card(card: Card):
-	if (room_reference.game_over):
+	if (room_reference.game_over || room_reference.game_paused):
 		return;
 	
 	if !card_being_dragged && card.card_pile != Card.CARD_PILE.DISCARD:

@@ -19,12 +19,14 @@ var discard_reference;
 var deck_reference;
 var audio_card_ref;
 var audio_deck_ref;
+var rules_ref: Node2D;
 var instruction_label;
 var face_btn;
 var skip_btn;
 var room_state: ROOM_STATE = ROOM_STATE.NORMAL;
 var selected_card: int = -1;
 var game_over: bool = false;
+var game_paused: bool = false;
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -35,6 +37,8 @@ func _ready() -> void:
 	instruction_label = $"../InstuctionsLabel";
 	audio_card_ref = $"../AudioPlayer/AudioCard";
 	audio_deck_ref = $"../AudioPlayer/AudioDeck";
+	rules_ref = $"../Rules";
+	rules_ref.get_node("ExitBtn").connect("pressed", _on_rules_back_btn_pressed);
 	set_instruction("Face or Skip the room");
 	advance_room();
 	pass # Replace with function body.
@@ -73,6 +77,22 @@ func end_game(won: bool):
 	end_screen.get_node("ScoreLabel").text = "Score: " + str(get_score());
 	end_screen.z_index = 1000;
 	$"..".add_child(end_screen);
+
+func show_rules():
+	pause_game();
+	rules_ref.visible = true;
+	rules_ref.z_index = 800;
+	
+func hide_rules():
+	rules_ref.visible = false;
+	rules_ref.z_index = -800;
+	unpause_game();
+
+func pause_game():
+	game_paused = true;
+
+func unpause_game():
+	game_paused = false;
 
 func animate_card_to_position(card: Card, new_position: Vector2, speed = CARD_DEFAULT_SPEED):
 	var tween = get_tree().create_tween()
@@ -193,7 +213,7 @@ func get_score():
 		score += int($"../Health/HealthLabel".text);
 		
 		for i in range (len(room)):
-			if (room[i].suit == Card.SUIT.HEART):
+			if (room[i] && room[i].suit == Card.SUIT.HEART):
 				score += room[i].value;
 	return int(score);
 
@@ -204,7 +224,7 @@ func get_selected_card():
 	return room[selected_card] if selected_card > -1 else null;
 
 func _on_card_left_click_released(card: Card):
-	if (!card):
+	if (game_over || game_paused || !card):
 		return;
 	
 	var card_is_in_room = false;
@@ -222,10 +242,14 @@ func _on_card_left_click_released(card: Card):
 					skip_btn.disabled = true;
 				selected_card = i;
 				var finished_play = play_card_effect(room[i]);
+				
 				# do -v in play_card_effect functions
 				#discard_reference.add_card_to_discard_pile(room[i]);
 				
 				if (finished_play):
+					if (game_over):
+						return;
+					
 					audio_card_ref.play();
 					room[i] = null;
 					unselect_card();
@@ -254,6 +278,9 @@ func _on_card_left_click_released(card: Card):
 			# defend weapon stuff
 
 func _on_skip_room_btn_pressed() -> void:
+	if (game_over || game_paused):
+		return;
+	
 	for i in range(len(room)):
 		if (room[i] != null):
 			var card = room[i];
@@ -275,6 +302,9 @@ func _on_skip_room_btn_pressed() -> void:
 	advance_room(false);
 
 func _on_discard_pile_clicked():
+	if (game_over || game_paused):
+		return;
+		
 	if (room_state == ROOM_STATE.DEFEND):
 		audio_card_ref.play();
 		discard_reference.add_card_to_discard_pile(get_selected_card());
@@ -284,3 +314,10 @@ func _on_discard_pile_clicked():
 		room_state = ROOM_STATE.NORMAL;
 		if (room.count(null) == 3):
 			advance_room();
+
+
+func _on_rules_btn_pressed() -> void:
+	show_rules();
+
+func _on_rules_back_btn_pressed() -> void:
+	hide_rules();

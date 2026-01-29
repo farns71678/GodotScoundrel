@@ -1,14 +1,14 @@
 extends Node2D
 
 
+var rules_screen;
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	rules_screen = $".".get_node("Rules");
+	rules_screen.get_node("ExitBtn").connect("pressed", _on_rules_exit_btn_pressed);
+	
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
 
 
 func _on_start_game_btn_pressed() -> void:
@@ -16,4 +16,8 @@ func _on_start_game_btn_pressed() -> void:
 
 
 func _on_rules_btn_pressed() -> void:
-	pass # Replace with function body.
+	rules_screen.visible = true;
+	
+
+func _on_rules_exit_btn_pressed() -> void:
+	rules_screen.visible = false;
