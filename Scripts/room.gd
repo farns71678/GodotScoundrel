@@ -28,6 +28,7 @@ var selected_card: int = -1;
 var game_over: bool = false;
 var game_paused: bool = false;
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	discard_reference = $"../Discard";
@@ -41,14 +42,32 @@ func _ready() -> void:
 	rules_ref.get_node("ExitBtn").connect("pressed", _on_rules_back_btn_pressed);
 	set_instruction("Face or Skip the room");
 	advance_room();
-	pass # Replace with function body.
 
 func set_instruction(label: String):
 	instruction_label.text = label;
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
+@warning_ignore("unused_parameter")
 func _process(delta: float) -> void:
-	pass
+	# use Input.is_action_just_pressed
+	if (Input.is_action_just_pressed("card_1")):
+		_on_card_left_click_released(room[0]);
+	if (Input.is_action_just_pressed("card_2")):
+		_on_card_left_click_released(room[1]);
+	if (Input.is_action_just_pressed("card_3")):
+		_on_card_left_click_released(room[2]);
+	if (Input.is_action_just_pressed("card_4")):
+		_on_card_left_click_released(room[3]);
+	if (Input.is_action_just_pressed("block_with_weapon")):
+		_on_card_left_click_released(equiped_weapon);
+	if (Input.is_action_just_pressed("take_damage")):
+		_on_discard_pile_clicked();
+	if (Input.is_action_just_pressed("skip_room")):
+		if (!skip_btn.disabled):
+			_on_skip_room_btn_pressed();
+	if (Input.is_action_just_pressed("face_room")):
+		if (!face_btn.disabled):
+			_on_face_room_btn_pressed();
 
 func advance_room(can_skip: bool = true):
 	skip_btn.disabled = !can_skip;
@@ -71,12 +90,34 @@ func advance_room(can_skip: bool = true):
 
 func end_game(won: bool):
 	game_over = true;
-	var end_screen = preload("res://Scenes/EndScreen.tscn").instantiate();
+	var end_screen: Node2D = preload("res://Scenes/EndScreen.tscn").instantiate();
+	
 	var result = "You Won" if won else "You Lost";
+	if (!won):
+		$"../ShakeCamera2D".add_trauma(0.6);
 	end_screen.get_node("ResultLabel").text = result;
 	end_screen.get_node("ScoreLabel").text = "Score: " + str(get_score());
 	end_screen.z_index = 1000;
-	$"..".add_child(end_screen);
+	end_screen.modulate.a = 0;
+	
+	var c = end_screen.modulate;
+	
+	var timer = Timer.new();
+	add_child(timer);
+	timer.autostart = true;
+	timer.wait_time = 1.4;
+	timer.one_shot = true;
+	timer.timeout.connect(func():
+		print("fading in end screen")
+		$"..".add_child(end_screen);
+		var tween = create_tween();
+		tween.tween_property(end_screen, "modulate", Color(c.r, c.g, c.b, 1.0), 1.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT);
+		tween.finished.connect(func():
+			print("fade in finished")
+			remove_child(timer)
+		);
+	);
+	timer.start();
 
 func show_rules():
 	pause_game();
